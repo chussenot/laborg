@@ -9,7 +9,7 @@ exit unless ENV["GITLAB_HOST"]?
 module Laborg
   VERSION = "0.1.0"
   RECURSIVE_LEVEL = 3
-  LOCAL_STATE_FILE = "./laborg.yml"
+  LOCAL_STATE_FILE = "./laborg.state"
 
   alias Groups = Array(Group)
   class Group
