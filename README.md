@@ -27,6 +27,11 @@ TODO: Write installation instructions here
     apply   Builds or Changes the first level groups
 
 ```
+
+### Help
+
+`GITLAB_TOKEN=xxxxxx GITLAB_HOST=https://git.mycompany.org laborg --help`
+
 ## Development
 
 TODO: Write development instructions here
