@@ -1,17 +1,20 @@
 require "gitlab"
 require "clim"
 require "json"
+require "yaml"
 
 exit unless ENV["GITLAB_TOKEN"]?
 exit unless ENV["GITLAB_HOST"]?
 
 module Laborg
   VERSION = "0.1.0"
+  RECURSIVE_LEVEL = 3
 
   alias Groups = Array(Group)
   class Group
     include JSON::Serializable
-    property id : Int32
+    include YAML::Serializable
+    property id : Int32?
     property web_url : String
     property name : String
     property path : String
@@ -46,7 +49,8 @@ module Laborg
         end
         i = i + 1
       end
-      groups
+      groups.reject!{|group| group.full_path.count("/") > RECURSIVE_LEVEL }
+      groups.to_yaml
     end
 
     def apply
@@ -62,7 +66,7 @@ module Laborg
         opts.help # => help string
       end
       sub "plan" do
-        desc "Generate an execution plan"
+        desc "Generate an execution plan and compare it"
         run do |opts, args|
           core = Laborg::Main.new
           puts core.plan
