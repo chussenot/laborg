@@ -1,6 +1,7 @@
 require "gitlab"
 require "clim"
 require "json"
+require "delimiter_tree"
 
 exit unless ENV["GITLAB_TOKEN"]?
 exit unless ENV["GITLAB_HOST"]?
@@ -46,6 +47,11 @@ module Laborg
         end
         i = i + 1
       end
+      tree = Delimiter::Tree(Group).new("/")
+      groups.each do |group|
+        tree.add "/#{group.full_path}", group
+      end
+      puts tree.find("/viserion/*").payload
       groups
     end
 
@@ -65,7 +71,7 @@ module Laborg
         desc "Generate an execution plan"
         run do |opts, args|
           core = Laborg::Main.new
-          puts core.plan
+          puts core.plan.map { |g| g.full_path}
         end
       end
       sub "apply" do

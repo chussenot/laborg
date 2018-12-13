@@ -12,7 +12,9 @@ dependencies:
   clim:
     github: at-grandpa/clim
     version: 0.4.1
-
+  delimiter_tree:
+    github: drujensen/delimiter_tree
+    
 targets:
   laborg:
     main: src/laborg.cr

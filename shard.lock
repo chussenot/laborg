@@ -4,6 +4,10 @@ shards:
     github: at-grandpa/clim
     version: 0.4.1
 
+  delimiter_tree:
+    github: drujensen/delimiter_tree
+    version: 0.1.4
+
   gitlab:
     github: chussenot/gitlab.cr
     version: 0.3.5
