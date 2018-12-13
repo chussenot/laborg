@@ -7,11 +7,12 @@ exit unless ENV["GITLAB_TOKEN"]?
 exit unless ENV["GITLAB_HOST"]?
 
 module Laborg
-  VERSION = "0.1.0"
-  RECURSIVE_LEVEL = 1
+  VERSION          = "0.1.0"
+  RECURSIVE_LEVEL  = 1
   LOCAL_STATE_FILE = "./laborg.state"
 
   alias Groups = Array(Group)
+
   class Group
     include JSON::Serializable
     include YAML::Serializable
@@ -42,7 +43,7 @@ module Laborg
         end
         i = i + 1
       end
-      @remote.reject!{|group| group.full_path.count("/") > RECURSIVE_LEVEL }
+      @remote.reject! { |group| group.full_path.count("/") > RECURSIVE_LEVEL }
       unless File.exists?(LOCAL_STATE_FILE)
         File.write(LOCAL_STATE_FILE, @remote.to_yaml)
       end
@@ -58,15 +59,15 @@ module Laborg
     def apply
       @local.each do |group|
         if group.description == ""
-          params = {"description" => group.name, "visibility" => group.visibility }
+          params = {"description" => group.name, "visibility" => group.visibility}
           puts @client.edit_group(group.id, params)
         end
       end
       # @client.create_group("GitLab-Group", "gitlab-path", params)
       # @client.edit_group(id, params)
     end
-
   end
+
   class Cli < Clim
     main do
       desc "Laborg CLI."
