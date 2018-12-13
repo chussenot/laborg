@@ -1,6 +1,7 @@
 # laborg
 
-TODO: Write a description here
+a CLI to manage the first groups of a given GitLab
+in a a local state file.
 
 ## Installation
 
@@ -8,8 +9,24 @@ TODO: Write installation instructions here
 
 ## Usage
 
-TODO: Write usage instructions here
+```
 
+  Laborg CLI.
+
+  Usage:
+
+    laborg [options] [arguments]
+
+  Options:
+
+    --help                           Show this help.
+
+  Sub Commands:
+
+    plan    Generate an execution plan and compare it
+    apply   Builds or Changes the first level groups
+
+```
 ## Development
 
 TODO: Write development instructions here
