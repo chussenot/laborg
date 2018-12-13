@@ -15,8 +15,14 @@ module Laborg
     end
 
     def plan
-      puts @client.groups.to_json
+      @client.groups.to_json
     end
+
+    def apply
+      params = {"parent_id" => 70}
+      @client.create_group("GitLab-Group", "gitlab-path", params)
+    end
+
   end
   class Cli < Clim
     main do
@@ -28,14 +34,14 @@ module Laborg
         desc "Generate an execution plan"
         run do |opts, args|
           core = Laborg::Main.new
-          core.plan
-          puts "sub_command run!!"
+          puts core.plan
         end
       end 
       sub "apply" do
         desc "Builds or Changes the first level groups"
         run do |opts, args|
-          puts "sub_command run!!"
+          core = Laborg::Main.new
+          core.apply
         end
       end 
     end
