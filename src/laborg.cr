@@ -19,12 +19,10 @@ module Laborg
     property name : String
     property id : Int32
     property parent_id : Int32?
-    property web_url : String
-    property path : String
     property description : String
     property visibility : String
-    property full_name : String
     property full_path : String
+    property flag : Bool?
   end
 
   class Main
