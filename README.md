@@ -1,5 +1,7 @@
 # laborg
 
+git*LAB ORG*anize the groups!
+
 a CLI to manage the first groups of a given GitLab
 in a a local state file.
 
