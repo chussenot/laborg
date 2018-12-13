@@ -59,8 +59,14 @@ module Laborg
     end
 
     def apply
-      params = {"parent_id" => 70}
-      @client.create_group("GitLab-Group", "gitlab-path", params)
+      local = Groups.from_yaml(File.read("./laborg.yml"))
+      local.each do |group|
+        if group.description == ""
+          params = {"description" => group.name, "visibility" => group.visibility }
+          puts @client.edit_group(group.id, params)
+        end
+      end
+      # @client.create_group("GitLab-Group", "gitlab-path", params)
       # @client.edit_group(id, params)
     end
 
