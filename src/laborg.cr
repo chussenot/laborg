@@ -9,6 +9,7 @@ exit unless ENV["GITLAB_HOST"]?
 module Laborg
   VERSION = "0.1.0"
   RECURSIVE_LEVEL = 3
+  LOCAL_STATE_FILE = "./laborg.yml"
 
   alias Groups = Array(Group)
   class Group
@@ -30,37 +31,32 @@ module Laborg
       endpoint = "#{ENV["GITLAB_HOST"]}/api/v4"
       token = ENV["GITLAB_TOKEN"]
       @client = Gitlab.client(endpoint, token)
-      @groups = Groups.new
+      @remote = Groups.new
       i = 0
       loop do
         result = @client.groups({"page" => i})
         if result.size == 0
           break
         else
-          @groups = @groups + Groups.from_json(result.to_json)
+          @remote = @remote + Groups.from_json(result.to_json)
         end
         i = i + 1
       end
-      @groups.reject!{|group| group.full_path.count("/") > RECURSIVE_LEVEL }
-    end
-
-    def init(content)
-      yaml_plan = "./laborg.yml"
-      unless File.exists?(@groups.to_yaml)
-        File.write(yaml_plan, content)
+      @remote.reject!{|group| group.full_path.count("/") > RECURSIVE_LEVEL }
+      unless File.exists?(LOCAL_STATE_FILE)
+        File.write(LOCAL_STATE_FILE, @remote.to_yaml)
       end
+      @local = Groups.from_yaml(File.read(LOCAL_STATE_FILE))
     end
 
     def plan
-      local = Groups.from_yaml(File.read("./laborg.yml"))
-      local.each do |group|
+      @local.each do |group|
         puts @client.group(group.id) if group.id
       end
     end
 
     def apply
-      local = Groups.from_yaml(File.read("./laborg.yml"))
-      local.each do |group|
+      @local.each do |group|
         if group.description == ""
           params = {"description" => group.name, "visibility" => group.visibility }
           puts @client.edit_group(group.id, params)
