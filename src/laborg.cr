@@ -14,20 +14,15 @@ module Laborg
   class Group
     include JSON::Serializable
     include YAML::Serializable
-    property id : Int32?
-    property web_url : String
     property name : String
+    property id : Int32
+    property parent_id : Int32?
+    property web_url : String
     property path : String
     property description : String
     property visibility : String
-    property lfs_enabled : Bool
-    property avatar_url : String?
-    property request_access_enabled : Bool
     property full_name : String
     property full_path : String
-    property parent_id : Int32?
-    property ldap_cn : Nil
-    property ldap_access : Nil
   end
 
   class Main
@@ -35,27 +30,38 @@ module Laborg
       endpoint = "#{ENV["GITLAB_HOST"]}/api/v4"
       token = ENV["GITLAB_TOKEN"]
       @client = Gitlab.client(endpoint, token)
-    end
-
-    def plan
-      groups = Groups.new
+      @groups = Groups.new
       i = 0
       loop do
         result = @client.groups({"page" => i})
         if result.size == 0
           break
         else
-          groups = groups + Groups.from_json(result.to_json)
+          @groups = @groups + Groups.from_json(result.to_json)
         end
         i = i + 1
       end
-      groups.reject!{|group| group.full_path.count("/") > RECURSIVE_LEVEL }
-      groups.to_yaml
+      @groups.reject!{|group| group.full_path.count("/") > RECURSIVE_LEVEL }
+    end
+
+    def init(content)
+      yaml_plan = "./laborg.yml"
+      unless File.exists?(@groups.to_yaml)
+        File.write(yaml_plan, content)
+      end
+    end
+
+    def plan
+      local = Groups.from_yaml(File.read("./laborg.yml"))
+      local.each do |group|
+        puts @client.group(group.id) if group.id
+      end
     end
 
     def apply
       params = {"parent_id" => 70}
       @client.create_group("GitLab-Group", "gitlab-path", params)
+      # @client.edit_group(id, params)
     end
 
   end
