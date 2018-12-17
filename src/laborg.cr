@@ -3,6 +3,8 @@ require "clim"
 require "json"
 require "yaml"
 require "./laborg/version"
+require "./laborg/gitlab/*"
+require "./laborg/cli"
 
 exit unless ENV["GITLAB_TOKEN"]?
 exit unless ENV["GITLAB_HOST"]?
@@ -11,33 +13,19 @@ module Laborg
   RECURSIVE_LEVEL  = 1
   LOCAL_STATE_FILE = "./laborg.state"
 
-  alias Groups = Array(Group)
-
-  class Group
-    include JSON::Serializable
-    include YAML::Serializable
-    property name : String
-    property id : Int32
-    property parent_id : Int32?
-    property description : String
-    property visibility : String
-    property full_path : String
-    property flag : Bool?
-  end
-
   class Main
     def initialize
       endpoint = "#{ENV["GITLAB_HOST"]}/api/v4"
       token = ENV["GITLAB_TOKEN"]
-      @client = Gitlab.client(endpoint, token)
-      @remote = Groups.new
+      @client = ::Gitlab.client(endpoint, token)
+      @remote = Gitlab::Groups.new
       i = 0
       loop do
         result = @client.groups({"page" => i})
         if result.size == 0
           break
         else
-          @remote = @remote + Groups.from_json(result.to_json)
+          @remote = @remote + Gitlab::Groups.from_json(result.to_json)
         end
         i = i + 1
       end
@@ -45,7 +33,7 @@ module Laborg
       unless File.exists?(LOCAL_STATE_FILE)
         File.write(LOCAL_STATE_FILE, @remote.to_yaml)
       end
-      @local = Groups.from_yaml(File.read(LOCAL_STATE_FILE))
+      @local = Gitlab::Groups.from_yaml(File.read(LOCAL_STATE_FILE))
     end
 
     def plan
@@ -67,29 +55,6 @@ module Laborg
       end
       # @client.create_group("GitLab-Group", "gitlab-path", params)
       # @client.edit_group(id, params)
-    end
-  end
-
-  class Cli < Clim
-    main do
-      desc "Laborg CLI."
-      run do |opts, args|
-        opts.help # => help string
-      end
-      sub "plan" do
-        desc "Generate an execution plan and compare it"
-        run do |opts, args|
-          core = Laborg::Main.new
-          puts core.plan
-        end
-      end
-      sub "apply" do
-        desc "Builds or Changes the first level groups"
-        run do |opts, args|
-          core = Laborg::Main.new
-          core.apply
-        end
-      end
     end
   end
 end
