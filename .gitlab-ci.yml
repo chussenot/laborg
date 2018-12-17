@@ -1,0 +1,32 @@
+image: "crystallang/crystal:latest"
+
+# Cache shards in between builds
+cache:
+  paths:
+    - lib
+
+# This is a basic example for a shard or script which doesn't use
+# services such as redis or postgres
+before_script:
+  - apt-get update -qq
+  - crystal -v # Print out Crystal version for debugging
+  - shards
+
+spec-and-format:
+  script:
+  - crystal spec
+  - crystal tool format --check
+
+release:
+  script:
+    - docker build -t laborg .
+
+pages:
+  stage: deploy
+  script:
+  - crystal docs -o public src/laborg.cr
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
