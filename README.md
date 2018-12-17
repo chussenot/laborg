@@ -55,3 +55,5 @@ TODO: Write development instructions here
 ## Resources
 
 * [Artifactory Ruby Client](https://github.com/chef/artifactory-client)
+* [Gitlab Python Client](https://python-gitlab.readthedocs.io/en/stable/gl_objects/groups.html#group-custom-attributes)
+* [Gitlab Custom Attributes](https://docs.gitlab.com/ce/api/custom_attributes.html)
