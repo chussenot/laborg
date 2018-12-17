@@ -50,7 +50,11 @@ module Laborg
 
     def plan
       @local.each do |group|
-        puts @client.group(group.id) if group.id
+        if group.id
+          puts @client.group(group.id)
+        else
+          group.flag = true
+        end
       end
     end
 
