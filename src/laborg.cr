@@ -2,12 +2,12 @@ require "gitlab"
 require "clim"
 require "json"
 require "yaml"
+require "./laborg/version"
 
 exit unless ENV["GITLAB_TOKEN"]?
 exit unless ENV["GITLAB_HOST"]?
 
 module Laborg
-  VERSION          = "0.1.0"
   RECURSIVE_LEVEL  = 1
   LOCAL_STATE_FILE = "./laborg.state"
 
