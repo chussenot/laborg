@@ -58,5 +58,3 @@ module Laborg
     end
   end
 end
-
-Laborg::Cli.start(ARGV)
