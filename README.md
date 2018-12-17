@@ -1,9 +1,11 @@
 # laborg
 
-git*LAB ORG*anize the groups!
+ORG*anize the groups!
 
-`laborg` is CLI to manage the first groups of a given GitLab
-with a local state file.
+`laborg` is CLI to manage the first groups of:
+
+* GitLab
+* Artifactory
 
 ## Installation
 
