@@ -51,3 +51,7 @@ TODO: Write development instructions here
 ## Contributors
 
 - [Clement Hussenot](https://github.com/chussenot) - creator and maintainer
+
+## Resources
+
+* [Artifactory Ruby Client](https://github.com/chef/artifactory-client)
