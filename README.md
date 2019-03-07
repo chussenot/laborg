@@ -1,5 +1,7 @@
 # laborg
 
+[![Build Status](https://www.travis-ci.org/chussenot/laborg.svg?branch=master)](https://www.travis-ci.org/chussenot/laborg)
+
 ORG*anize the groups!
 
 `laborg` is CLI to manage the first groups of:
